@@ -1,22 +1,26 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { prisma } from "../../src/lib/prisma.ts";
 
 export interface AuthRequest extends Request {
   user?: { id: string; role: string; officeId?: string | null };
 }
 
-export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
+export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "super-secret-key-for-mvp") as any;
-    req.user = decoded;
+    // For MVP/Demo: Automatically use the first user in the database
+    const user = await prisma.user.findFirst();
+    if (!user) {
+      return res.status(500).json({ error: "No users found in database. Please run seed script." });
+    }
+    
+    req.user = {
+      id: user.id,
+      role: user.role,
+      officeId: user.officeId
+    };
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    res.status(500).json({ error: "Authentication bypass failed" });
   }
 };
 

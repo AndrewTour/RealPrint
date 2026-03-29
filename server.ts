@@ -2,8 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import cors from "cors";
-import authRoutes from "./server/routes/auth";
-import campaignRoutes from "./server/routes/campaigns";
+import campaignRoutes from "./server/routes/campaigns.ts";
 
 async function startServer() {
   const app = express();
@@ -17,7 +16,6 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
   
-  app.use("/api/auth", authRoutes);
   app.use("/api/campaigns", campaignRoutes);
 
   // Vite middleware for development

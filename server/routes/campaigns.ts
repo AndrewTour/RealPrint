@@ -1,6 +1,6 @@
 import express from "express";
-import { prisma } from "../../src/lib/prisma";
-import { authenticate, AuthRequest } from "../middleware/auth";
+import { prisma } from "../../src/lib/prisma.ts";
+import { authenticate, AuthRequest } from "../middleware/auth.ts";
 
 const router = express.Router();
 

@@ -29,8 +29,7 @@ export default function CampaignBuilder() {
       const res = await fetch("/api/campaigns", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(formData)
       });

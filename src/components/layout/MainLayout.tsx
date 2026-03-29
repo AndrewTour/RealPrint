@@ -1,20 +1,7 @@
-import { Outlet, Navigate, Link, useNavigate } from "react-router-dom";
-import { LayoutDashboard, PlusCircle, LogOut } from "lucide-react";
+import { Outlet, Link } from "react-router-dom";
+import { LayoutDashboard, PlusCircle } from "lucide-react";
 
 export default function MainLayout() {
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
-
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
@@ -32,12 +19,6 @@ export default function MainLayout() {
             New Campaign
           </Link>
         </nav>
-        <div className="p-4 border-t border-gray-200">
-          <button onClick={handleLogout} className="flex items-center gap-3 px-3 py-2 w-full text-left text-gray-700 rounded-md hover:bg-gray-100">
-            <LogOut className="w-5 h-5" />
-            Logout
-          </button>
-        </div>
       </aside>
 
       {/* Main Content */}

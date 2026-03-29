@@ -8,9 +8,7 @@ export default function Dashboard() {
   const { data: campaigns, isLoading } = useQuery({
     queryKey: ["campaigns"],
     queryFn: async () => {
-      const res = await fetch("/api/campaigns", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      const res = await fetch("/api/campaigns");
       return res.json();
     },
   });
