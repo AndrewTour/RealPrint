@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      String   @default("AGENT") // SUPER_ADMIN, AGENCY_ADMIN, AGENT, MARKETING, PRINTER, DISTRIBUTOR
+  officeId  String?
+  office    Office?  @relation(fields: [officeId], references: [id])
+  campaigns Campaign[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Office {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  users     User[]
+  campaigns Campaign[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Supplier {
+  id        String   @id @default(uuid())
+  name      String
+  type      String   // PRINTER, DISTRIBUTOR
+  email     String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Campaign {
+  id            String   @id @default(uuid())
+  title         String
+  type          String   // JUST_LISTED, JUST_SOLD, FARMING, etc.
+  objective     String?
+  status        String   @default("DRAFT") // DRAFT, PENDING_APPROVAL, APPROVED, IN_PRODUCTION, PRINTED, DISPATCHED, DISTRIBUTING, COMPLETED, CANCELLED
+  
+  agentId       String
+  agent         User     @relation(fields: [agentId], references: [id])
+  officeId      String
+  office        Office   @relation(fields: [officeId], references: [id])
+  
+  artworkUrl    String?
+  
+  // Print Specs
+  printSize     String?  // DL, A5, A4
+  printStock    String?
+  printQuantity Int?
+  
+  // Schedule
+  inHomeDate    DateTime?
+  printDeadline DateTime?
+  
+  // Costs
+  printCost     Float?
+  distCost      Float?
+  totalCost     Float?
+  
+  territories   Territory[]
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Territory {
+  id                 String   @id @default(uuid())
+  name               String
+  geoJson            String   // Stored as stringified JSON
+  estimatedHouseholds Int
+  campaignId         String?
+  campaign           Campaign? @relation(fields: [campaignId], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
